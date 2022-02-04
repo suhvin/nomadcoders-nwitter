@@ -1,0 +1,91 @@
+Auth.js파일 작성
+--------------------------------------------------------------------
+import React, { useState } from "react";
+
+const Auth = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const onChange = (event) => {
+        // console.log(event.target.name);
+        const {target: {name,value}} = event;
+        if(name === "email"){
+            setEmail(value)
+        }else if(name === "password"){
+            setPassword(value)
+        }
+    };
+    const onSubmit = (event) => {
+        event.preventDefault();
+        // preventDefault() : 기본 행위가 실행되지 않기를 원한다
+        // 원래는 새로고침인데 그거 안되게 하기
+    };
+
+    return(
+        <div>
+            <form onSubmit={onSubmit}>
+                <input 
+                    name="email"
+                    type="email" 
+                    placeholder="Email" 
+                    required 
+                    value={email}
+                    onChange={onChange}
+                />
+                <input 
+                    name = "password"
+                    type="password" 
+                    placeholder="Password" 
+                    required 
+                    value={password}
+                    onChange={onChange}
+                />
+                <input type="submit" value="Log In"/>
+            </form>
+            <div>
+                <button>Continue with Google</button>
+                <button>Continue with Github</button>
+            </div>
+        </div>
+    );
+}
+export default Auth;
+--------------------------------------------------------------------
+파이어베이스 홈페이지에서 빌드 > Authentication
+이메일/비밀번호
+Google
+Github 체크
+Github의 경우 Settings > Developer settings > nwitter
+Client ID/Client secrets 찾아서 파이어베이스 홈페이지에 입력 
+
+form에 onSubmit 속성을 커스터마이징함 : event.preventDefault();
+input의 onChange가 일어날 때마다 event가 일어난 target(이메일 or 비밀번호)의 
+name, value 속성을 읽는다 name에 따라 분기해서 state의 값을 value로 세팅한다
+
+
+async, await를 이용해서 회원가입, 로그인을 해보자 (회원가입 시 즉시 로그인)
+--------------------------------------------------------------------
+const onSubmit = async(event) => {
+        event.preventDefault();
+        // preventDefault() : 기본 행위가 실행되지 않기를 원한다
+        // 원래는 새로고침인데 그거 안되게 하기
+
+        try{
+            let data;
+            if(newAccount){
+                // create account
+                data = await authService.createUserWithEmailAndPassword(email, password)
+            }else{
+                // log in
+                data = await authService.signInWithEmailAndPassword(email, password)
+            }
+            console.log(data);
+        }catch(error){
+            console.log(error);
+        }
+    };
+--------------------------------------------------------------------
+회원가입, 로그인을 할 때
+persistence를 고려 local, session, none
+local : 브라우저를 꺼도 유지
+session : 브라우저가 열려있을 동안 유저 기억
+none : refresh만 해도 로그아웃

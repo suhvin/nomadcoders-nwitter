@@ -1,0 +1,85 @@
+components, routes 폴더 만들기
+
+App.js를 components폴더 안으로 이동
+Router.js를 components폴더 안에 생성 : Router.js는 오직 route를 관리하기 위해 생성
+
+routes 폴더 안에 Auth, EditProfile, Home, Profile 등 함수형 컴포넌트 생성
+나중에 다른 컴포넌트에서 또 다른 컴포넌트 호출을 쉽게 하기 위해서
+--------------------------------------------------------------------
+const Home = () => <span>Home</span>
+export default Home;
+--------------------------------------------------------------------
+이렇게 export한다
+
+react에서 경로를 ../ 안쓰고 더 쉽게 잡기 위해서 jsconfig.json 파일을 생성
+--------------------------------------------------------------------
+{
+    "compilerOptions": {
+        "baseUrl": "src"
+    },
+    "include": ["src"]
+}
+--------------------------------------------------------------------
+
+App.js에서 Router.js의 AppRouter 컴포넌트 가져옴
+--------------------------------------------------------------------
+import React, { useState } from "react";
+import AppRouter from "components/Router";
+import { authService } from "myBase";
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
+  return (
+    <>
+      <AppRouter isLoggedIn={isLoggedIn}/>
+      <footer>&copy; nwitter {new Date().getFullYear()}</footer>
+    </>
+  );
+}
+
+export default App;
+--------------------------------------------------------------------
+import from "components/Router"
+import from "myBase"
+가 가능한 이유는 jsconfig.json을 만들고 firebase가 아닌 myBase를 이름으로 했기 때문
+
+authService를 myBase에서 가져옴
+authService.currentUser는 null이므로 isLoggedIn은 false
+App 컴포넌트에서 Router.js의 AppRouter 컴포넌트 호출(이름이 겹치면 안되서 AppRouter)
+호출 시 props롤 isLoggedIn을 넘겨줌
+
+
+--------------------------------------------------------------------
+import React, { useState } from "react";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import Auth from "../routes/Auth";
+import Home from "../routes/Home";
+
+const AppRouter = ({isLoggedIn}) => {
+    return(
+        <Router> 
+            <Routes> 
+                {isLoggedIn ? ( 
+                    <> 
+                    {/* fragment : 동일한 요소를 나열하고 싶은데 부모가 없을 때 사용 <> */}
+                    <Route path='/' element={<Home/>}/> 
+                    </> 
+                ) : ( 
+                    <Route path='/' element={<Auth/>}/> 
+                )} 
+            </Routes> 
+        </Router> 
+    ); 
+};
+
+export default AppRouter;
+--------------------------------------------------------------------
+npm install react-router-dom 
+: router, route, routes 등을 위해 react-router-dom 설치 
+
+js(v8)에서는 <Switch>를 지원했었지만
+js(v9)로 바뀌면서 <Routes>로 바뀜
+<Route>의 형식도 바뀜
+<Route path='/' element={<Home/>}/>
+같은 형태 디폴트로 exact path이고 exact path가 아니기 위해 다른 방법 필요
+

@@ -1,0 +1,44 @@
+npx create-react-app nwitter
+cd nwitter
+git init
+git remote add origin https://github.com/suhvin/nomadcoders-nwitter.git
+
+필요없는 것들 삭제
+: src 안에 App.js / index.js 만 남김
+: App.js / index.js 안에서도 불필요한 것들 지움 
+
+git add .
+git commit -m "1.0 Initialization"  
+git push origin master  
+
+_firebase 사용
+
+npm install --save firebase
+
+----------------------------------------------------------
+myBase.js 만들기
+
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAuWhwftRjy-BxZ-RzYHa6dUtlPHdbUfuQ",
+    authDomain: "nwitter-e5c35.firebaseapp.com",
+    projectId: "nwitter-e5c35",
+    storageBucket: "nwitter-e5c35.appspot.com",
+    messagingSenderId: "182197615763",
+    appId: "1:182197615763:web:c41eda4dddca4211fbe166"
+  };
+  // firebase 홈페이지에서 만들다보면 key값들이 뜬다
+
+firebase.initializeApp(firebaseConfig);
+export const authService = firebase.auth();
+----------------------------------------------------------
+js(v9)부터는 "firebase/app"이 아니라 "firebase/compat/app" 
+"firebase/auth"이 아니라 "firebase/compat/auth"
+
+
+만약 github 키값들이 올라가는게 보기 싫으면 .env파일을 만들자
+myBase.js는 
+apiKey: REACT_APP_API_KEY
+로 변경
